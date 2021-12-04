@@ -1,0 +1,4 @@
+with open("inputs\\input1.txt", "r") as inputFile:
+    taskInput = inputFile.read().split("\n")
+
+taskInput = list(map(lambda x:list(x), taskInput))
