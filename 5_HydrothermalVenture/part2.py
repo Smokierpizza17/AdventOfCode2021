@@ -66,8 +66,19 @@ for coordinatePair in parsedInput:
             x1, x2 = x2, x1
         for xIndex in range(x1, x2+1):  # consider x2 as well
             ventMap[y1][xIndex] += 1
-    else:  # diagonal line (TODO: check if 45°)
-        pass
+    elif abs(x2 - x1) == abs(y2 - y1):  # diagonal line @ 45°
+        if y2 - y1 > 0:
+            yRange = list(range(y1, y2+1))
+        else:
+            yRange = list(range(y2, y1+1))
+            yRange.reverse()
+        if x2 - x1 > 0:
+            xRange = list(range(x1, x2+1))
+        else:
+            xRange = list(range(x2, x1+1))
+            xRange.reverse()
+        for currIndex in range(len(yRange)):
+            ventMap[yRange[currIndex]][xRange[currIndex]] += 1
 
 overlapCount = 0
 for row in ventMap:
