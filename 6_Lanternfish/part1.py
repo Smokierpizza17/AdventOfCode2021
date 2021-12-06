@@ -14,7 +14,7 @@ class Lanternfish():
     def tick(self):
         if self.daysRem == 0:
             self.daysRem = 6
-            # Lanternfish(8)
+            Lanternfish(8)
         else:
             self.daysRem -= 1
 
