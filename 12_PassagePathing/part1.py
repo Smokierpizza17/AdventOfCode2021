@@ -63,7 +63,7 @@ class Cave():
     def addConnection(self, connectedCave):
         if self.name == "start":
             self.connections.append(connectedCave)
-        elif self.name == "end":
+        elif self.name == "end" or connectedCave.name == "start":
             connectedCave.connections.append(self)
         else:
             self.connections.append(connectedCave)

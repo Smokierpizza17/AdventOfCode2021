@@ -8,6 +8,16 @@ def getCave(caveName):
         if cave.name == caveName:
             return cave
 
+def containsSmallCaveTwice(path):
+    '''returns true if a small cave has been visited twice'''
+    alreadyVisitedSmall = []
+    for cave in path:
+        if cave[0].islower():
+            if cave in alreadyVisitedSmall:
+                return True
+            alreadyVisitedSmall.append(cave)
+    return False
+
 def findPaths(start, end):
     '''finds all paths from current to end through caves. Small caves can only
     be visited once, except one small cave, which can be visited twice'''
@@ -17,7 +27,7 @@ def findPaths(start, end):
     changed = True
     while changed:
         changed = False
-        for i, pathPair in enumerate(list(possiblePaths)):
+        for pathPair in list(possiblePaths):
             path = pathPair[0]
             hasVisitedTwice = pathPair[1]
             if path[-1] == "end":
@@ -28,14 +38,18 @@ def findPaths(start, end):
                 if not neighbour.isBigCave and neighbour.name in path:
                     if hasVisitedTwice:
                         neighbours.remove(neighbour)
-                    else:
-                        hasVisitedTwice = True
+
+            possiblePaths.remove(pathPair)
             if len(neighbours) == 0:
                 continue
             changed = True
-            possiblePaths.remove(pathPair)
             for neighbour in neighbours:
-                possiblePaths.append([path + [neighbour.name], hasVisitedTwice])
+                newPath = path + [neighbour.name]
+                if not hasVisitedTwice:  # if old path doesn't have visitedTwice set
+                    newVisitedTwice = containsSmallCaveTwice(newPath)
+                else:
+                    newVisitedTwice = hasVisitedTwice
+                possiblePaths.append([newPath, newVisitedTwice])
 
     finalPaths = []
     for pathPair in possiblePaths:
@@ -70,7 +84,7 @@ class Cave():
     def addConnection(self, connectedCave):
         if self.name == "start":
             self.connections.append(connectedCave)
-        elif self.name == "end":
+        elif self.name == "end" or connectedCave.name == "start":
             connectedCave.connections.append(self)
         else:
             self.connections.append(connectedCave)
@@ -93,7 +107,47 @@ for line in taskInput:
     firstCave.addConnection(secondCave)    
 
 paths = findPaths(startCave, endCave)
-for path in paths:
-    print(path)
+print("there are %s paths" % len(paths))
 
-print("\n%s" % len(paths))
+rawString = '''start,A,b,A,b,A,c,A,end
+start,A,b,A,b,A,end
+start,A,b,A,b,end
+start,A,b,A,c,A,b,A,end
+start,A,b,A,c,A,b,end
+start,A,b,A,c,A,c,A,end
+start,A,b,A,c,A,end
+start,A,b,A,end
+start,A,b,d,b,A,c,A,end
+start,A,b,d,b,A,end
+start,A,b,d,b,end
+start,A,b,end
+start,A,c,A,b,A,b,A,end
+start,A,c,A,b,A,b,end
+start,A,c,A,b,A,c,A,end
+start,A,c,A,b,A,end
+start,A,c,A,b,d,b,A,end
+start,A,c,A,b,d,b,end
+start,A,c,A,b,end
+start,A,c,A,c,A,b,A,end
+start,A,c,A,c,A,b,end
+start,A,c,A,c,A,end
+start,A,c,A,end
+start,A,end
+start,b,A,b,A,c,A,end
+start,b,A,b,A,end
+start,b,A,b,end
+start,b,A,c,A,b,A,end
+start,b,A,c,A,b,end
+start,b,A,c,A,c,A,end
+start,b,A,c,A,end
+start,b,A,end
+start,b,d,b,A,c,A,end
+start,b,d,b,A,end
+start,b,d,b,end
+start,b,end'''
+
+expectedOutput = list(map(lambda x:x.split(","), rawString.split("\n")))
+
+#for i in paths:
+#    if i not in expectedOutput:
+#        print(i)
