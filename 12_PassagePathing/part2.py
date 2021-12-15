@@ -1,4 +1,4 @@
-with open("inputs\\testinput.txt", "r") as inputFile:
+with open("inputs\\input.txt", "r") as inputFile:
     taskInput = inputFile.read().split("\n")
 
 def getCave(caveName):
@@ -22,6 +22,7 @@ def findPaths(start, end):
     '''finds all paths from current to end through caves. Small caves can only
     be visited once, except one small cave, which can be visited twice'''
     possiblePaths = []
+    finalPaths = []
     possiblePaths.append([[start.name], False])  # condition is "hasVisitedTwice"
 
     changed = True
@@ -30,7 +31,9 @@ def findPaths(start, end):
         for pathPair in list(possiblePaths):
             path = pathPair[0]
             hasVisitedTwice = pathPair[1]
-            if path[-1] == "end":
+            if path[0] == start.name and path[-1] == end.name:
+                possiblePaths.remove(pathPair)
+                finalPaths.append(path)
                 continue
             head = getCave(path[-1])
             neighbours = list(head.connections)
@@ -50,13 +53,9 @@ def findPaths(start, end):
                 else:
                     newVisitedTwice = hasVisitedTwice
                 possiblePaths.append([newPath, newVisitedTwice])
+            if len(finalPaths) % 500 == 0:
+                print("paths found: %s" % len(finalPaths))
 
-    finalPaths = []
-    for pathPair in possiblePaths:
-        path = pathPair[0]
-        if path[0] == start.name and path[-1] == end.name:
-            finalPaths.append(path)
-    
     return finalPaths
 
 
@@ -107,7 +106,7 @@ for line in taskInput:
     firstCave.addConnection(secondCave)    
 
 paths = findPaths(startCave, endCave)
-print("there are %s paths" % len(paths))
+print("\nthere are %s paths" % len(paths))
 
 rawString = '''start,A,b,A,b,A,c,A,end
 start,A,b,A,b,A,end
