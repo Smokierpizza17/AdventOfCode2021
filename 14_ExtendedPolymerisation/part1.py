@@ -1,8 +1,8 @@
 import re
 
-STEPSTOSIMULATE = 10
+STEPSTOSIMULATE = 3
 
-with open("inputs\\input.txt", "r") as inputFile:
+with open("inputs\\testinput.txt", "r") as inputFile:
     JoinedInput = inputFile.read().split("\n\n")
 
 chainList = list(JoinedInput[0])
