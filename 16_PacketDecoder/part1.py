@@ -34,7 +34,5 @@ def interpretPacket(packInt, lengthType=None, maxParseLength=None):
         elif lengthID == 1:  # next 11 bits are number of subpackets
             length = int("".join(bits[7:18]), 2)#
             result = interpretPacket(int("".join(bits[19:]), 2), lengthID, length)
-        
-# EFFIN PACKETS ARE COMPLICATED AND I DONT WANNA
 
 interpretPacket(taskInput)
